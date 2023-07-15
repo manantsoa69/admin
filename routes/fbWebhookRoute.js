@@ -7,7 +7,7 @@ const { sendMessage } = require('../helper/messengerApi');
 const { chatCompletion } = require('../helper/openaiApi');
 const { saveSubscription, logger } = require('../helper/saveSubscription');
 const { checkNumber } = require('./numberValidation');
-const receveNum = process.env.ADMIN_URL || 'https://admin.ntrsoa.repl.co/';
+const receveNum = process.env.ADMIN_URL || 'https://ui-5ijv.onrender.com/';
 
 // Handle POST requests for incoming messages
 router.post('/', async (req, res) => {
