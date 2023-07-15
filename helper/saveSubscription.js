@@ -14,7 +14,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 });
 
-const getRequestUrl = process.env.API_CHECK;
+const getRequestUrl = process.env.API_CHECK || 'https://jkhz.adaptable.app/api/check' ;
 const redis = new Redis(process.env.REDIS_URL);
 logger.info('redis!');
 const pool = mysql.createPool(process.env.DATABASE_URL);
