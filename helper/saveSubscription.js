@@ -44,7 +44,7 @@ const saveSubscription = async (fbid, subscriptionStatus) => {
       const [existingItem] = await connection.query('SELECT fbid, expireDate FROM users WHERE fbid = ?', [fbid]);
 
       if (existingItem.length > 0) {
-        // Update the expiration date for expired subscriptions in MySQL
+        // Update the expiration date for existing subscriptions in MySQL
         await connection.query('UPDATE users SET expireDate = ? WHERE fbid = ?', [expireDateISOString, fbid]);
       } else {
         // Insert the new item into the MySQL database
@@ -54,8 +54,8 @@ const saveSubscription = async (fbid, subscriptionStatus) => {
       connection.release();
     }
 
-    // Send a GET request to another server
-    const response = await axios.get(`${getRequestUrl}/api/check`);
+    // Send a POST request to another server without waiting for the response
+    axios.post(`${getRequestUrl}/api/check`);
 
     return true;
   } catch (error) {
