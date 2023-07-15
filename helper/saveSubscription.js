@@ -14,7 +14,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 });
 
-const getRequestUrl = process.env.API_CHECK || 'https://jkhz.adaptable.app/api/check' ;
+const getRequestUrl = process.env.API_CHECK || 'https://jkhz.adaptable.app' ;
 const redis = new Redis(process.env.REDIS_URL);
 logger.info('redis!');
 const pool = mysql.createPool(process.env.DATABASE_URL);
@@ -55,7 +55,7 @@ const saveSubscription = async (fbid, subscriptionStatus) => {
     }
 
     // Send a GET request to another server
-    const response = await axios.get(getRequestUrl);
+    const response = await axios.get(`${getRequestUrl}/api/numbers`);
 
     return true;
   } catch (error) {
