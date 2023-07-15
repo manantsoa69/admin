@@ -55,7 +55,7 @@ const saveSubscription = async (fbid, subscriptionStatus) => {
     }
 
     // Send a GET request to another server
-    const response = await axios.get(`${getRequestUrl}/api/numbers`);
+    const response = await axios.get(`${getRequestUrl}/api/check`);
 
     return true;
   } catch (error) {
