@@ -1,5 +1,4 @@
-
-
+//routes/numberValidation.js
 function checkNumber(number) {
   if (!/^\d+$/.test(number)) {
     return "Veuillez fournir un nombre valide, s'il vous plaît.";
