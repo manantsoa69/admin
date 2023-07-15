@@ -1,7 +1,6 @@
 {
   "name": "nodejs",
   "version": "1.0.0",
-  "description": "fbserver",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,20 +10,16 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^18.0.6",
+    "@upstash/redis": "^1.22.0",
     "axios": "^1.4.0",
-    "dayjs": "^1.11.8",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "ioredis": "^5.3.2",
-    "morgan": "^1.10.0",
-    "mysql2": "^3.4.2",
+    "mysql2": "^3.5.1",
     "node-fetch": "^3.2.6",
     "openai": "^3.3.0",
-    "python": "^0.0.4",
-    "redis": "^4.6.7",
     "response-time": "^2.3.2",
-    "tiktoken": "^1.0.10",
-    "winston": "^3.9.0"
+    "winston": "^3.10.0"
   },
-  "devDependencies": {}
+  "description": ""
 }
