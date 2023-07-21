@@ -1,18 +1,20 @@
 //helper/subscriptionHelper.js
-const { logger, redis, pool } = require('../helper/saveSubscription');
-
+const mysql = require('mysql2/promise');
+const Redis = require('ioredis');
+require('dotenv').config();
+const redis = new Redis(process.env.REDIS_URL);
+console.log('Redis connection established!');
+const pool = mysql.createPool(process.env.DATABASE_URL);
 const checkSubscription = async (fbid) => {
   try {
     const cacheItem = await redis.get(fbid);
     if (cacheItem) {
-     
       if (cacheItem === 'E') {
         return {
           subscriptionStatus: 'E',
           expireDate: 'E'
         };
       }
-
       return {
         subscriptionStatus: 'A',
         expireDate: cacheItem
@@ -30,7 +32,6 @@ const checkSubscription = async (fbid) => {
           expireDate: null
         };
       }
-
       const currentDate = new Date();
       const expireDate = new Date(subscriptionItem.expireDate);
 
@@ -54,7 +55,7 @@ const checkSubscription = async (fbid) => {
       connection.release();
     }
   } catch (error) {
-    logger.error('Error occurred while checking subscription:', error);
+    console.error('Error occurred while checking subscription:', error);
     return {
       subscriptionStatus: 'Error',
       expireDate: null
@@ -64,4 +65,7 @@ const checkSubscription = async (fbid) => {
 
 module.exports = {
   checkSubscription,
+  redis,
+  pool,
 };
+
