@@ -1,7 +1,5 @@
-//index.js
 const express = require('express');
 const responseTime = require('response-time');
-const { logger } = require('./helper/saveSubscription');
 
 require('dotenv').config();
 const webApp = express();
@@ -11,7 +9,7 @@ const startResponseTimer = (req, res, next) => {
   res.on('finish', () => {
     const end = process.hrtime(start);
     const duration = Math.round((end[0] * 1000) + (end[1] / 1000000));
-    logger.info(`${duration}ms`);
+    console.log(`${duration}ms`);
   });
   next();
 };
@@ -32,5 +30,5 @@ webApp.use('/', homeRoute.router);
 
 
 webApp.listen(PORT, () => {
-  logger.info(`Server is up and running at ${PORT}`);
+  console.log(`Server is up and running at ${PORT}`);
 });
