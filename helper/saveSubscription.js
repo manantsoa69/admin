@@ -1,23 +1,10 @@
 //helper/saveSubscription.js
 const axios = require('axios');
-const mysql = require('mysql2/promise');
-const Redis = require('ioredis');
 require('dotenv').config();
-const winston = require('winston');
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-   // winston.format.timestamp(),
-    winston.format.simple()
-  ),
-  transports: [new winston.transports.Console()],
-});
+const { redis, pool } = require('../helper/subscriptionHelper');
 const getRequestUrl = process.env.API_CHECK;
-const redis = new Redis(process.env.REDIS_URL);
-logger.info('redis!');
-const pool = mysql.createPool(process.env.DATABASE_URL);
-logger.info('PlanetScale!');
+
 
 const saveSubscription = async (fbid, subscriptionStatus) => {
   if (subscriptionStatus === 'A') {
@@ -25,10 +12,10 @@ const saveSubscription = async (fbid, subscriptionStatus) => {
   }
 
   const currentDate = new Date();
-  const expireDate = new Date(currentDate.getTime() + 10 * 60 * 1000); // Add 10 minutes to the current date
+  const expireDate = new Date(currentDate.getTime() + 1 * 60 * 1000); // Add 10 minutes to the current date
 
   try {
-    logger.info('Saving subscription:', subscriptionStatus);
+    console.log('Saving subscription:', subscriptionStatus);
 
     const cacheKey = `${fbid}`;
     const expireDateISOString = expireDate.toISOString();
@@ -40,34 +27,25 @@ const saveSubscription = async (fbid, subscriptionStatus) => {
 
     try {
       // Check if the FBID already exists in the MySQL database
-      const [existingItem] = await connection.query('SELECT fbid, expireDate FROM users WHERE fbid = ?', [fbid]);
+      const [existingItem] = await connection.query('INSERT INTO users (fbid, expireDate) VALUES (?, ?)', [fbid, expireDateISOString]);
 
-      if (existingItem.length > 0) {
-        // Update the expiration date for existing subscriptions in MySQL
-        await connection.query('UPDATE users SET expireDate = ? WHERE fbid = ?', [expireDateISOString, fbid]);
-      } else {
-        // Insert the new item into the MySQL database
-        await connection.query('INSERT INTO users (fbid, expireDate) VALUES (?, ?)', [fbid, expireDateISOString]);
-      }
     } finally {
       connection.release();
     }
 
     // Send a GET request to another server
-    axios.get(`${getRequestUrl}/api/check`).catch(error => {
-      logger.error('Error occurred while sending GET request:', error);
+    await axios.get(`${getRequestUrl}/api/check`).catch(error => {
+      console.log('Error occurred while sending GET request:', error);
     });
 
     return true;
   } catch (error) {
-    logger.error('Error occurred while saving subscription:', error);
+    console.log('Error occurred while saving subscription:', error);
     return false;
   }
 };
 
 module.exports = {
   saveSubscription,
-  logger,
-  redis,
-  pool
+
 };
