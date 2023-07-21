@@ -1,7 +1,6 @@
 //helper/messengerApi.js
 const axios = require('axios');
 require('dotenv').config();
-const { logger } = require('../helper/saveSubscription');
 const TOKEN = process.env.TOKEN;
 const PAGE_ID = process.env.PAGE_ID;
 
@@ -19,12 +18,11 @@ const sendMessage = async (senderId, message) => {
         message: { text: message },
       },
     };
-
-
+    
     const response = await axios(options);
     return 1;
   } catch (error) {
-    logger.error('Error occurred while sending message:', error);
+    console.error('Error occurred while checking subscription:', error);
     return 0;
   }
 };
