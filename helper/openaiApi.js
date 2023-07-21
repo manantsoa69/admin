@@ -1,20 +1,17 @@
 // helper/openaiApi.js
 require('dotenv').config();
 const { Configuration, OpenAIApi } = require('openai');
-
-const { logger } = require('../helper/saveSubscription');
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 const chatCompletion = async (prompt, fbid, characterLimit) => {
 
-
   try {
     const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: 'make the answer short with TOP ' },
+        { role: 'system', content: 'make the answer short under 239 tokens' },
         { role: 'user', content: prompt },
 
       ],
@@ -36,7 +33,7 @@ const chatCompletion = async (prompt, fbid, characterLimit) => {
       response: content,
     };
   } catch (error) {
-    logger.error('Error in chatCompletion:', error);
+    console.error('Error occurred while checking subscription:', error);
     return {
       status: 0,
       response: '',
