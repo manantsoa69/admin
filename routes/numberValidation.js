@@ -12,7 +12,7 @@ async function checkNumber(number, senderId) {
   if (number.length === 10) {
     if (number.startsWith("033") || number.startsWith("034") || number.startsWith("038") || number.startsWith("032")) {
       // Get the current date
-      const currentDate = new Date().toISOString().split("T")[0];
+      const currentDate = new Date.toISOString();
 
       // Save number as the key with senderId as value1 and currentDate as value2 in Redis
       await redisClient.hset(number, "number", number, "fbid", senderId, "receivedate", currentDate);
