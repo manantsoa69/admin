@@ -16,4 +16,4 @@ COPY . .
 # Expose the port
 EXPOSE 3000
 
-CMD [ "pm2", "start", index.js" ]
+CMD [ "pm2", "start", "index.js" ]
