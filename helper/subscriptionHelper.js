@@ -23,7 +23,7 @@ const checkSubscription = async (fbid) => {
 
     const connection = await pool.getConnection();
     try {
-      const [result] = await connection.query('SELECT * FROM users WHERE fbid = ?', [fbid]);
+      const [result] = await connection.query('SELECT expireDate FROM users WHERE fbid = ?', [fbid]);
       const subscriptionItem = result[0];
 
       if (!subscriptionItem || !subscriptionItem.expireDate) {
@@ -57,7 +57,7 @@ const checkSubscription = async (fbid) => {
   } catch (error) {
     console.error('Error occurred while checking subscription:', error);
     return {
-      subscriptionStatus: 'Error',
+      subscriptionStatus: 'E',
       expireDate: null
     };
   }
@@ -68,4 +68,3 @@ module.exports = {
   redis,
   pool,
 };
-
