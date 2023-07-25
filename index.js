@@ -24,8 +24,6 @@ webApp.use(startResponseTimer);
 webApp.use(express.urlencoded({ extended: true }));
 webApp.use(express.json());
 
-
-
 // Load other routes and middlewares
 const fbWebhookRoute = require('./routes/fbWebhookRoute');
 const homeRoute = require('./routes/homeRoute');
