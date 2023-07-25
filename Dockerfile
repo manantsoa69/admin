@@ -2,7 +2,7 @@
 FROM node:18
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app/pm2
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
