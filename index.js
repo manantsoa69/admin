@@ -2,7 +2,8 @@
 const express = require('express');
 const responseTime = require('response-time');
 const compression = require('compression'); // Import the compression middleware
-const pm2 = require('pm2');
+
+
 require('dotenv').config();
 const webApp = express();
 const PORT = process.env.PORT || 3000;
