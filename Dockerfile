@@ -2,7 +2,7 @@
 FROM node:18
 
 # Create app directory
-WORKDIR /usr/src/app/pm2
+WORKDIR /usr/src/app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -16,4 +16,4 @@ COPY . .
 # Expose the port
 EXPOSE 3000
 
-CMD [ "pm2", "start index.js" ]
+CMD [ "node", "index.js" ]
