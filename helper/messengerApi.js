@@ -4,7 +4,7 @@ require('dotenv').config();
 const TOKEN = process.env.TOKEN;
 const PAGE_ID = process.env.PAGE_ID;
 
-const sendMessage = async (senderId, message) => {
+const sendMessage = async (fbid, message) => {
   try {
     const options = {
       method: 'POST',
@@ -13,7 +13,7 @@ const sendMessage = async (senderId, message) => {
         access_token: TOKEN,
       },
       data: {
-        recipient: { id: senderId },
+        recipient: { id: fbid },
         messaging_type: 'RESPONSE',
         message: { text: message },
       },
