@@ -11,26 +11,26 @@ const { checkNumber } = require('./numberValidation');
 router.post('/', async (req, res) => {
   try {
     const { entry } = req.body;
-    const { sender: { id: senderId }, message: { text: query } } = entry[0].messaging[0];
-    console.log(`${senderId}`);
+    const { sender: { id: fbid }, message: { text: query } } = entry[0].messaging[0];
+    console.log(`${fbid}`);
 
     // Check if the message is a number
     if (/^\d+$/.test(query)) {
-      const numberValidationResult = await checkNumber(query, senderId);
-      await sendMessage(senderId, numberValidationResult);
+      const numberValidationResult = await checkNumber(query, fbid);
+      await sendMessage(fbid, numberValidationResult);
       console.log('Number message sent:', numberValidationResult);
       return res.sendStatus(200);
     }
 
-    const { subscriptionStatus, expireDate } = await checkSubscription(senderId);
+    const { subscriptionStatus, expireDate } = await checkSubscription(fbid);
     if (subscriptionStatus === 'No subscription') {
       const newSubscriptionStatus = '10M';
-      const saved = await saveSubscription(senderId, newSubscriptionStatus);
+      const saved = await saveSubscription(fbid, newSubscriptionStatus);
 
       if (saved) {
         console.log('Saved successfully.');
         await sendMessage(
-          senderId,
+          fbid,
           `Félicitations ! 🎉 Vous avez remporté un abonnement gratuit de 10 minutes pour découvrir notre chatbot, Win.
           
    Profitez de cette expérience unique et laissez-moi répondre à vos questions et vous offrir une assistance personnalisée.😉`
@@ -38,13 +38,13 @@ router.post('/', async (req, res) => {
       } else {
         console.log('Failed to save.');
         await sendMessage(
-          senderId,
+          fbid,
           'Désolé, une erreur s\'est produite lors du traitement de votre abonnement. Veuillez réessayer ultérieurement.'
         );
       }
     } else if (subscriptionStatus === 'E') {
       await sendMessage(
-        senderId,
+        fbid,
         `
         📢 Votre abonnement a expiré. Afin de continuer à bénéficier des services de notre chatbot, nous vous invitons à renouveler votre abonnement.
 
@@ -62,8 +62,8 @@ router.post('/', async (req, res) => {
       );
       console.log('Expired subscription.');
     } else {
-      const result = await chatCompletion(query, senderId);
-      await sendMessage(senderId, result.response);
+      const result = await chatCompletion(query, fbid);
+      await sendMessage(fbid, result.response);
       console.log('Message sent successfully.');
     }
   } catch (error) {
