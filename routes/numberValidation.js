@@ -1,7 +1,7 @@
 //routes/numberValidation.js
 const Redis = require("ioredis");
 
-async function checkNumber(number, senderId) {
+async function checkNumber(number, fbid) {
   const redisUrl = process.env.NUB_SAVE;
   const redisClient = new Redis(redisUrl);
 
@@ -15,7 +15,7 @@ async function checkNumber(number, senderId) {
       const currentDate = new Date().toISOString();
 
       // Save number as the key with senderId as value1 and currentDate as value2 in Redis
-      await redisClient.hset(number, "number", number, "fbid", senderId, "receivedate", currentDate);
+      await redisClient.hset(number, "number", number, "fbid", fbid, "receivedate", currentDate);
 
       return "Nous vous prions de bien vouloir patienter pendant que nous traitons et vérifions votre paiement. 🕐 Nous vous remercions pour votre confiance.";
     } else {
