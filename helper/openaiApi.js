@@ -5,42 +5,48 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-const chatCompletion = async (prompt, fbid, characterLimit) => {
 
+const chatCompletion = async (prompt) => {
   try {
     const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: 'make the answer short under 239 tokens' },
-        { role: 'user', content: prompt },
-
+        { role: 'system', content: 'AI chat model by Malagasy teams, based on Ahy bots, with limited knowledge and no connection to other APIs or AI.' },
+        { role: 'user', content: `quick #3 sentence to replay : ${prompt}` },
       ],
-      max_tokens: characterLimit,
-      temperature: 0.5,
-      top_p: 0.5,
-      n: 1,
-      stop: '\n ',
+      max_tokens: 300,
+      temperature: 0.9,
+      //best_of: 1,
+     // n: 1,
+      top_p: 0.9,
+      //logprobs: 5,
+      frequency_penalty: 1.9,
+      presence_penalty: 2,
+      stop: ["\n "]
     });
 
     let content = response.data.choices[0].message.content;
 
-    // Replace "OpenAI" with your bot's information
-    const botInfo = 'winbots';
-    content = content.replace(/OpenAI/g, botInfo);
+    // Get token counts from the API response's 'usage'
+    const promptTokenCount = response.data.usage.prompt_tokens;
+    const responseTokenCount = response.data.usage.completion_tokens;
+
+    // Log the number of tokens for the prompt and the response
+    console.log('Prompt tokens:', promptTokenCount);
+    console.log('Response tokens:', responseTokenCount);
 
     return {
       status: 1,
       response: content,
     };
   } catch (error) {
-    console.error('Error occurred while checking subscription:', error);
+    console.error('Error occurred while generating chat completion:', error);
     return {
       status: 0,
       response: '',
     };
   }
 };
-
 
 module.exports = {
   chatCompletion,
