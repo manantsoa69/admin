@@ -5,7 +5,7 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-
+console.time('generet');
 const chatCompletion = async (prompt) => {
   try {
     const response = await openai.createChatCompletion({
@@ -14,19 +14,16 @@ const chatCompletion = async (prompt) => {
         { role: 'system', content: 'AI chat model by Malagasy teams, based on Ahy bots, with limited knowledge and no connection to other APIs or AI.' },
         { role: 'user', content: `quick #3 sentence to replay : ${prompt}` },
       ],
-      max_tokens: 300,
-      temperature: 0.9,
-      //best_of: 1,
-     // n: 1,
-      top_p: 0.9,
-      //logprobs: 5,
+      max_tokens: 200,
+      temperature: 0.5,
+      top_p: 0.5,
       frequency_penalty: 1.9,
       presence_penalty: 2,
       stop: ["\n "]
     });
 
     let content = response.data.choices[0].message.content;
-
+    console.timeEnd('generet');
     // Get token counts from the API response's 'usage'
     const promptTokenCount = response.data.usage.prompt_tokens;
     const responseTokenCount = response.data.usage.completion_tokens;
@@ -39,6 +36,7 @@ const chatCompletion = async (prompt) => {
       status: 1,
       response: content,
     };
+    
   } catch (error) {
     console.error('Error occurred while generating chat completion:', error);
     return {
@@ -51,3 +49,4 @@ const chatCompletion = async (prompt) => {
 module.exports = {
   chatCompletion,
 };
+//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

@@ -12,7 +12,6 @@ const cachedPageID = PAGE_ID;
 const apiClient = axios.create({
   baseURL: 'https://graph.facebook.com/v11.0/',
 });
-
 // Set the access token in the client instance's defaults
 apiClient.defaults.params = {
   access_token: cachedToken,
@@ -32,7 +31,6 @@ const sendMessage = async (fbid, message) => {
     return 0;
   }
 };
-
 module.exports = {
   sendMessage,
 };

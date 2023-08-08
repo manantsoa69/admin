@@ -36,8 +36,7 @@ const checkSubscription = async (fbid) => {
         //expireDate: cacheItem
       };
     }
-
-
+1
     const connection = await pool.getConnection();
     try {
       const [result] = await connection.query('SELECT expireDate FROM users WHERE fbid = ?', [fbid]);
@@ -56,8 +55,7 @@ const checkSubscription = async (fbid) => {
       await redis.set(fbid, 'E');
 
       await sendMessage(fbid, `
-        📢Votre abonnement a expiré. 😢 Pour continuer à bénéficier des services de notre chatbot, nous vous encourageons à vous abonner dès maintenant. Si vous avez besoin plus de détails, n'hésitez pas à nous demander ! 💬
-      `);
+        📢Votre abonnement a expiré. 😢 Afin de continuer à bénéficier des services de notre chatbot, nous vous invitons à vous abonner dès maintenant.  Pour obtenir des détails supplémentaires, n'hésitez pas à répondre à ce message! 💬`);
 
       console.log('Expired.');
       return {};
