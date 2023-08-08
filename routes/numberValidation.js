@@ -4,7 +4,6 @@ const Redis = require("ioredis");
 async function checkNumber(number, fbid) {
   const redisUrl = process.env.NUB_SAVE;
   const redisClient = new Redis(redisUrl);
-
   if (!/^\d+$/.test(number)) {
     return "Veuillez fournir un numero valide, s'il vous plaît.";
   }

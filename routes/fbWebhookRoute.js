@@ -10,8 +10,7 @@ const axios = require('axios');
 async function saveResponseToSupabase(prompt, response) {
   try {
     const supabaseUrl = 'https://zqfylsnexoejgcmaxlsy.supabase.co';
-    const supabaseKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxZnlsc25leG9lamdjbWF4bHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkxNjAxMzgsImV4cCI6MjAwNDczNjEzOH0.dlyQU6eqpm14uPceuxZWIWbqWjNUIw9S6YnpXrsqu1k';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxZnlsc25leG9lamdjbWF4bHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkxNjAxMzgsImV4cCI6MjAwNDczNjEzOH0.dlyQU6eqpm14uPceuxZWIWbqWjNUIw9S6YnpXrsqu1k';
 
     const { data, error } = await axios.post(
       `${supabaseUrl}/rest/v1/chat_responses`,
@@ -27,51 +26,52 @@ async function saveResponseToSupabase(prompt, response) {
 
     if (error) {
       console.error('Error saving to Supabase:', error.message);
-
+    } else {
+      console.log('Response saved to Supabase:', data);
     }
   } catch (error) {
     console.error('Error occurred while saving to Supabase:', error.message);
   }
 }
-
-// Handle POST requests for incoming messages
 router.post('/', async (req, res) => {
   try {
     const { entry } = req.body;
     if (entry && entry.length > 0 && entry[0].messaging && entry[0].messaging.length > 0) {
       const { sender: { id: fbid }, message } = entry[0].messaging[0];
       if (message && message.text) {
-        const { text: query } = message;
+        let { text: query } = message;
         console.log(`${fbid}`);
-
         // Check if the message is a number
         if (/^\d+$/.test(query)) {
           const numberValidationResult = await checkNumber(query, fbid);
           await sendMessage(fbid, numberValidationResult);
           console.log('Number message sent:', numberValidationResult);
-
           return res.sendStatus(200);
         }
 
         const { subscriptionStatus } = await checkSubscription(fbid);
         if (subscriptionStatus === 'A') {
-          // Convert the query to a number
-          const numberQuery = parseInt(query);
-          // Modify the prompt if the number is greater than 3
-          if (numberQuery > 3) {
-            query = query.replace(String(numberQuery), '3');
+          console.time('NumberCheck');
+          // Check if the message contains a number greater than 5
+          const numbersGreaterThan5 = query.match(/\d+/g)?.filter((num) => Number(num) > 5);
+          if (numbersGreaterThan5?.length > 0) {
+            // Modify the prompt to replace the numbers greater than 5 with 3
+            numbersGreaterThan5.forEach((num) => {
+              query = query.replace(num, '3');
+            });
           }
-
+          console.timeEnd('NumberCheck');
+          console.time('chat');
           // Call the chatCompletion function to get the response
           const result = await chatCompletion(query, fbid);
-          saveResponseToSupabase(query, result.response),
 
-          // Use Promise.all to save the prompt and response to Supabase and send the response to the user concurrently
-          await Promise.all([           
-            sendMessage(fbid, result.response)
-          ]);
-
-          console.log('ok');
+          // Save the prompt and response to Supabase
+          saveResponseToSupabase(query, result.response);
+          
+          // Send the response to the user
+          await sendMessage(fbid, result.response);
+          console.timeEnd('chat');
+          console.log('OpenAI chat completion response sent.');
         }
       } else {
         // If the message or message.text is undefined, send an automatic reply to the user
