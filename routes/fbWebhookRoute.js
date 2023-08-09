@@ -12,7 +12,7 @@ async function saveResponseToSupabase(prompt, response) {
     const supabaseUrl = 'https://zqfylsnexoejgcmaxlsy.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxZnlsc25leG9lamdjbWF4bHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkxNjAxMzgsImV4cCI6MjAwNDczNjEzOH0.dlyQU6eqpm14uPceuxZWIWbqWjNUIw9S6YnpXrsqu1k';
 
-    const { data, error } = await axios.post(
+    const { error } = await axios.post(
       `${supabaseUrl}/rest/v1/chat_responses`,
       { prompt, response },
       {
@@ -26,8 +26,6 @@ async function saveResponseToSupabase(prompt, response) {
 
     if (error) {
       console.error('Error saving to Supabase:', error.message);
-    } else {
-      console.log('Response saved to Supabase:', data);
     }
   } catch (error) {
     console.error('Error occurred while saving to Supabase:', error.message);
