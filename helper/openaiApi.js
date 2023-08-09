@@ -5,7 +5,6 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-console.time('generet');
 const chatCompletion = async (prompt) => {
   try {
     const response = await openai.createChatCompletion({
@@ -23,15 +22,6 @@ const chatCompletion = async (prompt) => {
     });
 
     let content = response.data.choices[0].message.content;
-    console.timeEnd('generet');
-    // Get token counts from the API response's 'usage'
-    const promptTokenCount = response.data.usage.prompt_tokens;
-    const responseTokenCount = response.data.usage.completion_tokens;
-
-    // Log the number of tokens for the prompt and the response
-    console.log('Prompt tokens:', promptTokenCount);
-    console.log('Response tokens:', responseTokenCount);
-
     return {
       status: 1,
       response: content,
